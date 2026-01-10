@@ -1,0 +1,341 @@
+:root {
+  --primary: #0074d9;
+  --primary-dark: #001f3f;
+  --secondary: #f4f4f4;
+  --success: #2ecc40;
+  --danger: #ff4136;
+  --background: #ffffff;
+  --text: #222;
+  --border: #e1e1e1;
+  --transition: 0.25s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  transition: background 0.6s, color 0.6s;
+}
+
+header, footer {
+  background: var(--primary);
+  color: #fff;
+  padding: 1em;
+  text-align: center;
+  user-select: none;
+}
+
+main {
+  padding: 2em 1em;
+  max-width: 900px;
+  margin: auto;
+}
+
+h1, h2 {
+  color: var(--primary-dark);
+  margin-top: 0;
+}
+
+label {
+  font-weight: 600;
+}
+
+input, select, button {
+  margin-bottom: 1em;
+  padding: 0.5em;
+  width: 100%;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-radius: 8px;
+  padding: 0.6em 1em;
+  box-shadow: 0 2px 12px rgba(0, 116, 217, 0.15);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.primary-btn {
+  background: var(--primary);
+  color: white;
+}
+
+button.primary-btn:hover,
+button.primary-btn:focus {
+  background: var(--primary-dark);
+  transform: scale(0.98);
+}
+
+button.secondary-btn {
+  background: #0057b8;
+  color: #fff;
+}
+
+button.secondary-btn:hover,
+button.secondary-btn:focus {
+  background: #003f7d;
+  transform: scale(0.98);
+}
+
+button.danger-btn {
+  background: var(--danger);
+  color: white;
+}
+
+button.danger-btn:hover,
+button.danger-btn:focus {
+  background: #b73327;
+  transform: scale(0.98);
+}
+
+form {
+  background: var(--secondary);
+  padding: 1.5em;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: 2em auto;
+  box-shadow: 0 4px 24px rgb(0 0 0 / 0.1);
+  user-select: none;
+  transition: box-shadow 0.3s ease;
+}
+
+form:hover,
+form:focus-within {
+  box-shadow: 0 6px 48px rgb(0 0 0 / 0.18);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+#dashboard header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0 0 1em 0;
+}
+
+#dashboard h1 {
+  flex-grow: 1;
+  margin: 0;
+  font-weight: 700;
+}
+
+#dashboard nav button {
+  margin-left: 0.5em;
+}
+
+ul#accounts-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2em 0;
+}
+
+ul#accounts-list li {
+  background: #fafcff;
+  margin-bottom: 0.75em;
+  padding: 0.75em 1em;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+ul#accounts-list li:hover {
+  background: #e6f0fa;
+  box-shadow: 0 6px 12px rgba(0, 116, 217, 0.15);
+}
+
+#transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2em;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+#transactions-table th,
+#transactions-table td {
+  padding: 0.65em 0.75em;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+#transactions-table th {
+  background: #f5f8fa;
+  user-select: none;
+}
+
+#transactions-table tr:last-child td {
+  border-bottom: none;
+}
+
+#transactions-table td.amount {
+  font-weight: 700;
+}
+
+#transactions-table td.amount.positive {
+  color: var(--success);
+}
+
+#transactions-table td.amount.negative {
+  color: var(--danger);
+}
+
+.operations-nav {
+  margin-bottom: 2em;
+  display: flex;
+  gap: 1em;
+}
+
+#transfer-section, #billpay-section {
+  max-width: 400px;
+  margin: 0 auto 2em auto;
+  background: var(--secondary);
+  padding: 1.5em;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+}
+
+.feedback {
+  min-height: 1.5em;
+  font-size: 0.9rem;
+  margin-top: -0.6em;
+  margin-bottom: 0.6em;
+  color: var(--danger);
+  user-select: none;
+  transition: background-color 0.4s ease;
+}
+
+.feedback.success {
+  color: var(--success);
+  background-color: #d3f7d3;
+  padding: 0.15em 0.4em;
+  border-radius: 6px;
+}
+
+#profile-section {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 360px;
+  width: 90vw;
+  min-width: 260px;
+  background: #fff;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%);
+  padding: 1.5em 2em;
+  z-index: 10;
+  user-select: none;
+}
+
+#profile-form button {
+  margin-top: 0.5em;
+}
+
+.pw-input-container button {
+  min-width: 60px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0.5em;
+  font-weight: 600;
+  user-select: none;
+  transition: background-color 0.25s ease;
+}
+
+.pw-input-container button:hover,
+.pw-input-container button:focus {
+  background: var(--primary-dark);
+  outline: none;
+}
+
+footer p {
+  font-size: 0.9rem;
+  user-select: none;
+  margin: 2em 0 1em;
+  color: #999;
+}
+
+/* Dark Mode */
+body.dark {
+  --background: #15181c;
+  --secondary: #23252a;
+  --text: #fafcff;
+  --border: #334050;
+}
+
+body.dark header, body.dark footer {
+  background: var(--primary-dark);
+}
+
+body.dark label {
+  color: #f8fafb;
+}
+
+body.dark input, body.dark select, body.dark button {
+  background: var(--secondary);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+body.dark #transactions-table th {
+  background: #23252a;
+}
+
+body.dark ul#accounts-list li {
+  background: #23252a;
+  border-color: var(--border);
+}
+
+body.dark #profile-section {
+  background: #1e2027;
+  border-color: #0a3758;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  main, form {
+    padding: 1em;
+  }
+
+  #transactions-table th, #transactions-table td {
+    font-size: 0.85em;
+    padding: 0.3em 0.5em;
+  }
+
+  #profile-section {
+    width: 95vw;
+  }
+
+  .operations-nav {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NeoBank | Advanced Secure Banking</title>
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <style>
+    /* --- CSS VARIABLES & RESET --- */
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a0ca3;
+      --secondary: #f8f9fa;
+      --accent: #4cc9f0;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f1c40f;
+      --text-main: #2b2d42;
+      --text-muted: #8d99ae;
+      --bg-body: #edf2f4;
+      --bg-card: #ffffff;
+      --border: #e9ecef;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      --radius: 16px;
+      --sidebar-width: 260px;
+    }
+
+    /* Dark Mode Override */
+    body.dark {
+      --primary: #4cc9f0;
+      --primary-dark: #4361ee;
+      --secondary: #161b22;
+      --text-main: #edf2f4;
+      --text-muted: #8b949e;
+      --bg-body: #0d1117;
+      --bg-card: #161b22;
+      --border: #30363d;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    /* --- LAYOUT & LOGIN --- */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Auth Screens */
+    .auth-wrapper {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      padding: 1rem;
+    }
+
+    .auth-card {
+      background: var(--bg-card);
+      padding: 2.5rem;
+      border-radius: var(--radius);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .logo-area {
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* --- SIDEBAR (Dashboard) --- */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 100;
+      transform: translateX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links {
+      list-style: none;
+      padding: 1rem;
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.85rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(67, 97, 238, 0.1);
+      color: var(--primary);
+    }
+
+    .nav-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+    .user-profile-mini {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #4cc9f0, #4361ee);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    /* --- MAIN CONTENT --- */
+    .main-content {
+      flex-grow: 1;
+      margin-left: var(--sidebar-width);
+      padding: 2rem;
+      max-width: 1600px;
+      transition: margin 0.3s;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title h1 { font-size: 1.5rem; margin: 0; }
+    .page-title p { color: var(--text-muted); margin: 5px 0 0; }
+
+    .header-actions { display: flex; gap: 1rem; }
+
+    /* --- GRID SYSTEM --- */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    .card-panel {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+    }
+
+    /* --- COMPONENTS --- */
+    /* Virtual Card */
+    .virtual-card-container {
+      perspective: 1000px;
+      width: 100%;
+      height: 220px;
+      margin-bottom: 2rem;
+    }
+
+    .virtual-card {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #4361ee, #f72585);
+      border-radius: 20px;
+      padding: 1.5rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(67, 97, 238, 0.5);
+      transition: transform 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .virtual-card:hover { transform: rotateY(5deg) rotateX(5deg); }
+    
+    .chip {
+      width: 50px;
+      height: 35px;
+      background: linear-gradient(135deg, #e0e0e0, #a0a0a0);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .card-number { font-size: 1.4rem; letter-spacing: 2px; font-family: monospace; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .card-details { display: flex; justify-content: space-between; font-size: 0.9rem; opacity: 0.9; }
+
+    /* Accounts List */
+    .account-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .account-item:last-child { border-bottom: none; }
+    .account-item:hover { background: var(--secondary); border-radius: 8px; }
+    .acc-info h4 { margin: 0; font-size: 1rem; }
+    .acc-info p { margin: 4px 0 0; font-size: 0.85rem; color: var(--text-muted); }
+    .acc-bal { font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+
+    /* Transactions Table */
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 1rem; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+    td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+    tr:last-child td { border-bottom: none; }
+    
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .status-in { background: rgba(46, 204, 113, 0.15); color: var(--success); }
+    .status-out { background: rgba(231, 76, 60, 0.15); color: var(--danger); }
+
+    /* Forms */
+    .form-group { margin-bottom: 1.25rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; }
+    input, select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 1rem;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15); }
+
+    button.btn {
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.1s, opacity 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    button.btn:active { transform: scale(0.98); }
+    
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-ghost { background: transparent; color: var(--text-main); border: 1px solid var(--border); }
+
+    /* Analytics Chart (CSS only bars) */
+    .chart-bars { display: flex; align-items: flex-end; justify-content: space-between; height: 150px; padding-top: 20px; }
+    .bar-group { display: flex; flex-direction: column; align-items: center; width: 12%; }
+    .bar { width: 100%; background: var(--secondary); border-radius: 6px; position: relative; overflow: hidden; height: 100px; }
+    .bar-fill {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--primary);
+      transition: height 1s ease;
+      border-radius: 6px;
+    }
+    .bar-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toast {
+      background: var(--bg-card);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+      animation: slideIn 0.3s ease-out forwards;
+      color: var(--text-main);
+    }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+    
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* Helper Classes */
+    .hidden { display: none !important; }
+    .text-center { text-align: center; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .mt-4 { margin-top: 1rem; }
+    .mb-4 { margin-bottom: 1rem; }
+
+    /* Spinner */
+    .spinner {
+      width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%; border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); width: 280px; }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; padding: 1rem; }
+      .virtual-card-container { height: 200px; }
+      .hamburger { display: block; font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--text-main); }
+    }
+    @media (min-width: 769px) { .hamburger { display: none; } }
+  </style>
+</head>
+<body>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="logo-area">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><line x1="16" y1="21" x2="16" y2="21.01"></line><line x1="12" y1="21" x2="12" y2="21.01"></line><line x1="8" y1="21" x2="8" y2="21.01"></line><line x1="2" y1="11" x2="22" y2="11"></line></svg>
+        NeoBank
+      </div>
+      
+      <!-- Login Form -->
+      <form id="login-form">
+        <h2 style="margin-bottom: 0.5rem;">Welcome Back</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Securely access your accounts</p>
+        
+        <div class="form-group">
+          <input type="text" id="login-username" placeholder="Username (jdoe)" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <input type="password" id="login-password" placeholder="Password (@ 123)" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" id="login-btn">
+          <span>Sign In</span>
+        </button>
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--text-muted);">Demo: jdoe / @ 123</p>
+      </form>
+
+      <!-- OTP Form -->
+      <form id="otp-form" class="hidden">
+        <h2 style="margin-bottom: 0.5rem;">Verify Identity</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Enter the code sent to your device</p>
+        
+        <div class="form-group">
+          <input type="text" id="otp-input" placeholder="000000" maxlength="6" pattern="\d{6}" style="letter-spacing: 5px; text-align: center; font-size: 1.5rem;" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="otp-btn">
+          <span>Verify Code</span>
+        </button>
+        <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--text-muted);" id="otp-hint"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD APP -->
+  <div id="app-screen" class="app-container hidden">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="11" x2="22" y2="11"></line></svg>
+        NeoBank
+        <button class="hamburger" onclick="toggleSidebar()" style="margin-left:auto; font-size:1.2rem;">&times;</button>
+      </div>
+      
+      <ul class="nav-links">
+        <li class="nav-item">
+          <button class="nav-btn active" onclick="navigate('dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            Overview
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" onclick="navigate('transfers')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            Transfers
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" onclick="navigate('billpay')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            Bill Pay
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" onclick="navigate('loan')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 3v13.8a2 2 0 0 1-2.18 2 2 0 0 1-1.85-1.35L8.5 4.18A2 2 0 0 0 6.64 3h-1.3a2 2 0 0 0-1.93 2.53l2.5 13.5a2 2 0 0 0 1.97 1.64H19a2 2 0 0 0 2-2V3z"></path></svg>
+            Calculator
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-btn" onclick="navigate('profile')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Profile
+          </button>
+        </li>
+      </ul>
+
+      <div class="user-profile-mini">
+        <div class="avatar" id="nav-avatar">JD</div>
+        <div style="flex-grow:1;">
+          <div style="font-weight:600; font-size:0.9rem;" id="nav-username">John Doe</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">Premium Member</div>
+        </div>
+        <button onclick="logout()" style="background:none; border:none; color:var(--danger); cursor:pointer;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="main-content">
+      
+      <!-- Top Header -->
+      <header>
+        <button class="hamburger" onclick="toggleSidebar()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="page-title">
+          <h1 id="page-heading">Dashboard</h1>
+          <p id="page-subheading">Financial Overview</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-ghost" onclick="toggleTheme()" title="Toggle Dark Mode" style="width: auto; padding: 0.5rem 1rem;">
+            <span id="theme-icon">🌙</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEWS -->
+      
+      <!-- 1. DASHBOARD VIEW -->
+      <div id="view-dashboard" class="view-section">
+        <div class="dashboard-grid">
+          
+          <!-- Left Column -->
+          <div>
+            <!-- Virtual Card -->
+            <div class="virtual-card-container">
+              <div class="virtual-card">
+                <div class="flex-between">
+                  <span style="font-weight:700; letter-spacing:1px;">NeoBank Platinum</span>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1"><circle cx="8" cy="12" r="8" opacity="0.7"></circle><circle cx="16" cy="12" r="8" opacity="0.7"></circle></svg>
+                </div>
+                <div class="chip"></div>
+                <div>
+                  <div class="card-number">4588 **** **** 9012</div>
+                  <div class="card-details mt-4">
+                    <span>JOHN DOE</span>
+                    <span>EXP 12/28</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transactions -->
+            <div class="card-panel">
+              <div class="flex-between mb-4">
+                <h3>Recent Transactions</h3>
+                <div style="position:relative;">
+                  <input type="text" id="tx-search" placeholder="Search..." onkeyup="filterTransactions()" style="padding:0.5rem 1rem; width: 180px; font-size:0.9rem;">
+                </div>
+              </div>
+              <div class="table-container">
+                <table id="transactions-table">
+                  <thead>
+                    <tr><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div>
+            <!-- Quick Transfer -->
+            <div class="card-panel">
+              <h3>Quick Actions</h3>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:1rem;">
+                <button class="btn btn-ghost" onclick="navigate('transfers')">Send Money</button>
+                <button class="btn btn-ghost" onclick="navigate('billpay')">Pay Bill</button>
+                <button class="btn btn-ghost" onclick="navigate('loan')">EMI Calc</button>
+                <button class="btn btn-ghost" onclick="alert('Card frozen!')" style="color:var(--danger); border-color:var(--danger);">Freeze Card</button>
+              </div>
+            </div>
+
+            <!-- Spending Analysis -->
+            <div class="card-panel">
+              <h3>Spending Analytics</h3>
+              <div class="chart-bars">
+                <!-- Bars will be generated by JS -->
+                <div class="bar-group"><div class="bar"><div class="bar-fill" style="height:30%"></div></div><span class="bar-label">Mon</span></div>
+                <div class="bar-group"><div class="bar"><div class="bar-fill" style="height:50%"></div></div><span class="bar-label">Tue</span></div>
+                <div class="bar-group"><div class="bar"><div class="bar-fill" style="height:20%"></div></div><span class="bar-label">Wed</span></div>
+                <div class="bar-group"><div class="bar"><div class="bar-fill" style="height:80%"></div></div><span class="bar-label">Thu</span></div>
+                <div class="bar-group"><div class="bar"><div class="bar-fill" style="height:60%"></div></div><span class="bar-label">Fri</span></div>
+              </div>
+            </div>
+
+            <!-- Accounts List -->
+            <div class="card-panel">
+              <h3>My Accounts</h3>
+              <div id="accounts-list" style="margin-top:1rem;"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 2. TRANSFERS VIEW -->
+      <div id="view-transfers" class="view-section hidden">
+        <div class="card-panel" style="max-width: 600px; margin: 0 auto;">
+          <h3>Transfer Money</h3>
+          <p class="text-muted mb-4">Send money instantly to any bank account.</p>
+          <form id="transfer-form">
+            <div class="form-group">
+              <label>From Account</label>
+              <select id="transfer-from" required></select>
+            </div>
+            <div class="form-group">
+              <label>Recipient IBAN</label>
+              <input type="text" id="transfer-to" placeholder="GB00 BANK 0000 0000 0000 00" required pattern="[A-Z0-9]{10,34}">
+            </div>
+            <div class="form-group">
+              <label>Amount (₹)</label>
+              <input type="number" id="transfer-amount" placeholder="0.00" min="1" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label>Reference</label>
+              <input type="text" id="transfer-ref" placeholder="e.g. Rent, Gift">
+            </div>
+            <button type="submit" class="btn btn-primary" id="transfer-btn">Send Money</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 3. BILL PAY VIEW -->
+      <div id="view-billpay" class="view-section hidden">
+        <div class="dashboard-grid">
+           <div class="card-panel">
+            <h3>Pay Bills</h3>
+            <form id="billpay-form">
+              <div class="form-group">
+                <label>Biller Category</label>
+                <select id="bill-category">
+                  <option>Electricity</option>
+                  <option>Water</option>
+                  <option>Internet / Broadband</option>
+                  <option>Mobile Postpaid</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Biller Name</label>
+                <input type="text" id="bill-company" placeholder="e.g. Comcast, Verizon" required>
+              </div>
+              <div class="form-group">
+                <label>Amount (₹)</label>
+                <input type="number" id="bill-amount" placeholder="0.00" min="1" step="0.01" required>
+              </div>
+              <button type="submit" class="btn btn-primary" id="billpay-btn">Pay Bill</button>
+            </form>
+           </div>
+           
+           <div class="card-panel">
+             <h3>Scheduled Payments</h3>
+             <div style="padding: 1rem; background: var(--secondary); border-radius: 8px; margin-top: 1rem;">
+                <div class="flex-between">
+                  <strong>Internet Bill</strong>
+                  <span class="status-badge status-in" style="color: var(--warning); background: rgba(241, 196, 15, 0.15);">Due in 2 days</span>
+                </div>
+                <p style="font-size:0.9rem; margin: 5px 0 0;">₹1,200.00</p>
+             </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- 4. LOAN CALCULATOR VIEW -->
+      <div id="view-loan" class="view-section hidden">
+        <div class="card-panel" style="max-width: 600px; margin: 0 auto;">
+          <h3>EMI Calculator</h3>
+          <p class="text-muted mb-4">Calculate your monthly loan payments.</p>
+          
+          <div class="form-group">
+            <label>Loan Amount (₹)</label>
+            <input type="range" id="loan-amt-range" min="10000" max="5000000" step="10000" value="500000">
+            <input type="number" id="loan-amount" value="500000" style="margin-top:0.5rem;">
+          </div>
+          
+          <div class="flex-between" style="gap:20px;">
+            <div class="form-group" style="flex:1;">
+              <label>Interest Rate (%)</label>
+              <input type="number" id="loan-rate" value="8.5" step="0.1">
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>Tenure (Years)</label>
+              <input type="number" id="loan-years" value="5" step="1">
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="calculateEMI()">Calculate</button>
+
+          <div id="emi-result" class="hidden" style="margin-top: 2rem; text-align: center; padding: 1.5rem; background: var(--secondary); border-radius: 12px;">
+            <p style="margin:0; color: var(--text-muted);">Monthly EMI</p>
+            <h2 style="margin: 0.5rem 0; color: var(--primary);">₹<span id="emi-val">0</span></h2>
+            <p style="font-size:0.85rem; margin:0;">Total Interest: ₹<span id="total-interest">0</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. PROFILE VIEW -->
+      <div id="view-profile" class="view-section hidden">
+        <div class="card-panel" style="max-width: 500px; margin: 0 auto;">
+          <div class="text-center" style="margin-bottom: 2rem;">
+            <div class="avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto;">JD</div>
+            <h3 style="margin: 10px 0 5px;">John Doe</h3>
+            <p class="text-muted" style="margin:0;">jdoe | ID: 8839201</p>
+          </div>
+
+          <form id="profile-pass-form">
+            <h4 style="border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 1rem;">Security</h4>
+            <div class="form-group">
+              <label>New Password</label>
+              <input type="password" id="new-password" required minlength="5">
+              <div id="pass-strength-bar" style="height: 4px; background: #ddd; margin-top: 8px; border-radius: 2px; width: 0%;"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Password</button>
+          </form>
+          
+          <div class="mt-4">
+            <button onclick="logout()" class="btn btn-danger">Log Out</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // --- STATE MANAGEMENT ---
+    const DEMO_USER = {
+      username: 'jdoe',
+      // SHA-256 for '@ 123'
+      passwordHash: '37825f7b00b15794d24b8f8a362cc12ba530157e4c394319bb9b14009d1b2503',
+      accounts: [
+        { id: 1, name: 'Main Checking', iban: 'GB44 NEOB 0123 4567 89', balance: 4250.12, type: 'Checking' },
+        { id: 2, name: 'High Interest Savings', iban: 'GB44 NEOB 9876 5432 10', balance: 17000.00, type: 'Savings' }
+      ],
+      transactions: [
+        { id: 1, date: '2025-07-24', desc: 'ATM Deposit', amt: 2000, type: 'credit' },
+        { id: 2, date: '2025-07-21', desc: 'Whole Foods Market', amt: -75.62, type: 'debit' },
+        { id: 3, date: '2025-07-20', desc: 'Salary Credit', amt: 2000, type: 'credit' },
+        { id: 4, date: '2025-07-18', desc: 'Netflix Subscription', amt: -15.99, type: 'debit' },
+        { id: 5, date: '2025-07-15', desc: 'Shell Station', amt: -45.00, type: 'debit' }
+      ]
+    };
+
+    let session = {
+      loggedIn: false,
+      user: null,
+      otp: null
+    };
+
+    // --- UTILITIES ---
+    async function hash(str) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const formatCurrency = (amt) => '₹' + Math.abs(amt).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    
+    function showToast(msg, type = 'neutral') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      let icon = '';
+      if (type === 'success') icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      else if (type === 'error') icon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+      
+      toast.innerHTML = `${icon}<span>${msg}</span>`;
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease-in reverse forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function setLoading(btnId, isLoading) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      if (isLoading) {
+        btn.dataset.originalText = btn.innerHTML;
+        btn.innerHTML = '<div class="spinner"></div>';
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = btn.dataset.originalText;
+        btn.disabled = false;
+      }
+    }
+
+    // --- AUTHENTICATION ---
+    document.getElementById('login-form').onsubmit = async (e) => {
+      e.preventDefault();
+      setLoading('login-btn', true);
+      
+      const u = document.getElementById('login-username').value.trim();
+      const p = document.getElementById('login-password').value;
+      
+      await new Promise(r => setTimeout(r, 800)); // Fake delay
+
+      if (u === DEMO_USER.username && (await hash(p)) === DEMO_USER.passwordHash) {
+        // Correct creds, generate OTP
+        session.otp = Math.floor(100000 + Math.random() * 900000);
+        
+        document.getElementById('login-form').classList.add('hidden');
+        document.getElementById('otp-form').classList.remove('hidden');
+        document.getElementById('otp-hint').innerText = `Development Mode: Your code is ${session.otp}`;
+        showToast(`OTP Sent: ${session.otp}`, 'success');
+      } else {
+        showToast('Invalid Username or Password', 'error');
+      }
+      setLoading('login-btn', false);
+    };
+
+    document.getElementById('otp-form').onsubmit = async (e) => {
+      e.preventDefault();
+      setLoading('otp-btn', true);
+      const input = document.getElementById('otp-input').value;
+      
+      await new Promise(r => setTimeout(r, 800));
+
+      if (parseInt(input) === session.otp) {
+        // Success
+        session.loggedIn = true;
+        session.user = JSON.parse(JSON.stringify(DEMO_USER)); // Deep copy
+        
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-screen').classList.remove('hidden');
+        
+        initDashboard();
+        showToast(`Welcome back, ${session.user.username}!`, 'success');
+      } else {
+        showToast('Invalid Code', 'error');
+      }
+      setLoading('otp-btn', false);
+    };
+
+    function logout() {
+      session = { loggedIn: false, user: null, otp: null };
+      document.getElementById('app-screen').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+      document.getElementById('otp-form').classList.add('hidden');
+      document.getElementById('login-form').reset();
+      document.getElementById('otp-form').reset();
+      showToast('Logged out successfully');
+    }
+
+    // --- DASHBOARD LOGIC ---
+    function initDashboard() {
+      renderAccounts();
+      renderTransactions();
+      updateChart();
+      
+      // Setup Transfer Form Dropdown
+      const sel = document.getElementById('transfer-from');
+      sel.innerHTML = '';
+      session.user.accounts.forEach(acc => {
+        const opt = document.createElement('option');
+        opt.value = acc.id;
+        opt.innerText = `${acc.name} (${formatCurrency(acc.balance)})`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function renderAccounts() {
+      const container = document.getElementById('accounts-list');
+      container.innerHTML = '';
+      session.user.accounts.forEach(acc => {
+        const el = document.createElement('div');
+        el.className = 'account-item';
+        el.onclick = () => alert(`Account: ${acc.iban}`);
+        el.innerHTML = `
+          <div class="acc-info">
+            <h4>${acc.name}</h4>
+            <p>**** ${acc.iban.slice(-4)}</p>
+          </div>
+          <div class="acc-bal">${formatCurrency(acc.balance)}</div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function renderTransactions(filter = '') {
+      const tbody = document.querySelector('#transactions-table tbody');
+      tbody.innerHTML = '';
+      
+      const filtered = session.user.transactions.filter(t => 
+        t.desc.toLowerCase().includes(filter.toLowerCase()) || 
+        t.date.includes(filter)
+      );
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No transactions found</td></tr>';
+        return;
+      }
+
+      filtered.forEach(t => {
+        const tr = document.createElement('tr');
+        const isCredit = t.type === 'credit';
+        tr.innerHTML = `
+          <td>${t.date}</td>
+          <td>${t.desc}</td>
+          <td style="font-weight:600; color: ${isCredit ? 'var(--success)' : 'var(--text-main)'}">
+            ${isCredit ? '+' : ''}${formatCurrency(t.amt)}
+          </td>
+          <td><span class="status-badge ${isCredit ? 'status-in' : 'status-out'}">${isCredit ? 'Income' : 'Expense'}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterTransactions() {
+      const query = document.getElementById('tx-search').value;
+      renderTransactions(query);
+    }
+
+    function updateChart() {
+      // Simple random height animation for the CSS bars
+      const bars = document.querySelectorAll('.bar-fill');
+      bars.forEach(bar => {
+        const h = Math.floor(Math.random() * 80) + 20;
+        bar.style.height = `${h}%`;
+      });
+    }
+
+    // --- NAVIGATION ---
+    function navigate(viewId) {
+      // Update Sidebar
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active'); // Assumes onclick passes event, but we called inline. 
+      // Fix: we will select based on viewId for highlighting if needed, 
+      // but simpler to just loop based on text content or index.
+      // For this demo, let's just visually switch sections.
+      
+      // Hide all sections
+      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`view-${viewId}`).classList.remove('hidden');
+      
+      // Update Header
+      const titles = {
+        'dashboard': ['Dashboard', 'Financial Overview'],
+        'transfers': ['Transfers', 'Send Money Securely'],
+        'billpay': ['Bill Payments', 'Manage Utilities'],
+        'loan': ['Calculator', 'Plan your Loans'],
+        'profile': ['My Profile', 'Settings & Security']
+      };
+      
+      const [h, p] = titles[viewId] || ['Dashboard', ''];
+      document.getElementById('page-heading').innerText = h;
+      document.getElementById('page-subheading').innerText = p;
+
+      // Close sidebar on mobile
+      if(window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // --- OPERATIONS ---
+    document.getElementById('transfer-form').onsubmit = (e) => {
+      e.preventDefault();
+      setLoading('transfer-btn', true);
+      const amt = parseFloat(document.getElementById('transfer-amount').value);
+      const accId = document.getElementById('transfer-from').value;
+      const acc = session.user.accounts.find(a => a.id == accId);
+      
+      setTimeout(() => {
+        if (acc.balance >= amt) {
+          acc.balance -= amt;
+          session.user.transactions.unshift({
+            id: Date.now(),
+            date: new Date().toISOString().split('T')[0],
+            desc: `Transfer to ${document.getElementById('transfer-to').value.slice(0,6)}...`,
+            amt: -amt,
+            type: 'debit'
+          });
+          initDashboard(); // Re-render
+          document.getElementById('transfer-form').reset();
+          showToast('Transfer Successful!', 'success');
+          navigate('dashboard');
+        } else {
+          showToast('Insufficient Funds', 'error');
+        }
+        setLoading('transfer-btn', false);
+      }, 1000);
+    };
+
+    document.getElementById('billpay-form').onsubmit = (e) => {
+      e.preventDefault();
+      setLoading('billpay-btn', true);
+      const amt = parseFloat(document.getElementById('bill-amount').value);
+      const company = document.getElementById('bill-company').value;
+      const acc = session.user.accounts[0]; // Default to first
+
+      setTimeout(() => {
+        if (acc.balance >= amt) {
+          acc.balance -= amt;
+          session.user.transactions.unshift({
+            id: Date.now(),
+            date: new Date().toISOString().split('T')[0],
+            desc: `Bill Pay: ${company}`,
+            amt: -amt,
+            type: 'debit'
+          });
+          initDashboard();
+          document.getElementById('billpay-form').reset();
+          showToast(`Paid ${formatCurrency(amt)} to ${company}`, 'success');
+        } else {
+          showToast('Insufficient Funds', 'error');
+        }
+        setLoading('billpay-btn', false);
+      }, 1000);
+    };
+
+    // --- CALCULATOR ---
+    function calculateEMI() {
+      const P = parseFloat(document.getElementById('loan-amount').value);
+      const r = parseFloat(document.getElementById('loan-rate').value) / 12 / 100;
+      const n = parseFloat(document.getElementById('loan-years').value) * 12;
+
+      const emi = (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+      const total = emi * n;
+      
+      document.getElementById('emi-val').innerText = emi.toLocaleString(undefined, {maximumFractionDigits:0});
+      document.getElementById('total-interest').innerText = (total - P).toLocaleString(undefined, {maximumFractionDigits:0});
+      document.getElementById('emi-result').classList.remove('hidden');
+    }
+
+    // Sync range input
+    document.getElementById('loan-amt-range').oninput = (e) => {
+      document.getElementById('loan-amount').value = e.target.value;
+    };
+    document.getElementById('loan-amount').oninput = (e) => {
+      document.getElementById('loan-amt-range').value = e.target.value;
+    }
+
+    // --- PROFILE ---
+    document.getElementById('profile-pass-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('new-password').value;
+      session.user.passwordHash = await hash(pw);
+      // In a real app we would send this to server
+      DEMO_USER.passwordHash = session.user.passwordHash; 
+      showToast('Password Updated Successfully', 'success');
+      document.getElementById('new-password').value = '';
+    }
+    
+    document.getElementById('new-password').oninput = (e) => {
+      const val = e.target.value;
+      const bar = document.getElementById('pass-strength-bar');
+      let strength = 0;
+      if (val.length > 5) strength += 30;
+      if (val.match(/[A-Z]/)) strength += 30;
+      if (val.match(/[0-9]/)) strength += 40;
+      
+      bar.style.width = `${strength}%`;
+      bar.style.background = strength < 50 ? 'var(--danger)' : strength < 80 ? 'var(--warning)' : 'var(--success)';
+    }
+
+    // --- THEME ---
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      document.getElementById('theme-icon').innerText = isDark ? '☀️' : '🌙';
+    }
+    
+    // Virtual Card Tilt Effect
+    const card = document.querySelector('.virtual-card');
+    const container = document.querySelector('.virtual-card-container');
+    
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const xRot = -((y - rect.height/2) / 10);
+      const yRot = (x - rect.width/2) / 10;
+      
+      card.style.transform = `rotateX(${xRot}deg) rotateY(${yRot}deg)`;
+    });
+    
+    container.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+
+  </script>
+</body>
+</html>
