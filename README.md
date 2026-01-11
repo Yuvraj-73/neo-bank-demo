@@ -34,4 +34,4 @@ OTP: Displayed via in-app toast notification.
 
 Distributed under the MIT License.
 
-Developed by Yuvraj Bhasim
+Developed by Yuvraj Bhasin
