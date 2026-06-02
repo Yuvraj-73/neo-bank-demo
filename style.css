@@ -339,3 +339,196 @@ body.dark #profile-section {
     flex-direction: column;
   }
 }
+/* ==========================
+   MOBILE RESPONSIVE FIX
+   ========================== */
+
+@media (max-width: 768px) {
+
+  /* Main Layout */
+  .main-content {
+    margin-left: 0 !important;
+    padding: 15px !important;
+    width: 100%;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .page-title h1 {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .page-title p {
+    font-size: 0.9rem;
+  }
+
+  /* Dashboard Layout */
+  .dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px;
+  }
+
+  /* Show right panel content first */
+  .dashboard-grid > div:first-child {
+    order: 2;
+  }
+
+  .dashboard-grid > div:last-child {
+    order: 1;
+  }
+
+  /* Virtual Card */
+  .virtual-card-container {
+    height: 180px !important;
+    margin-bottom: 15px;
+  }
+
+  .virtual-card {
+    padding: 15px;
+  }
+
+  .card-number {
+    font-size: 1.1rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  .card-details {
+    font-size: 0.75rem !important;
+  }
+
+  .chip {
+    width: 45px;
+    height: 30px;
+  }
+
+  /* Quick Action Buttons */
+  .card-panel {
+    margin-bottom: 15px;
+  }
+
+  .card-panel h3 {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+  }
+
+  /* Analytics Chart */
+  .chart-bars {
+    height: 120px;
+  }
+
+  /* Accounts */
+  .account-item {
+    padding: 12px;
+  }
+
+  .acc-info h4 {
+    font-size: 0.9rem;
+  }
+
+  .acc-bal {
+    font-size: 0.95rem;
+  }
+
+  /* Transaction Search */
+  #tx-search {
+    width: 120px !important;
+  }
+
+  /* Table */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 100% !important;
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: 8px 5px;
+    font-size: 12px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    z-index: 9999;
+    transform: translateX(-100%);
+    transition: 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Better spacing */
+  .flex-between {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Loan Calculator */
+  #view-loan .flex-between {
+    flex-direction: column;
+  }
+
+  /* Forms */
+  input,
+  select,
+  button {
+    font-size: 16px;
+  }
+
+  /* Profile */
+  .avatar {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 480px) {
+
+  .page-title h1 {
+    font-size: 1.8rem;
+  }
+
+  .virtual-card-container {
+    height: 170px !important;
+  }
+
+  .card-number {
+    font-size: 0.95rem !important;
+  }
+
+  .card-details {
+    font-size: 0.7rem !important;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    font-size: 11px;
+  }
+}
