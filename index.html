@@ -913,37 +913,35 @@
     }
 
     // --- NAVIGATION ---
-    function navigate(viewId) {
-      // Update Sidebar
-      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-      event.currentTarget.classList.add('active'); // Assumes onclick passes event, but we called inline. 
-      // Fix: we will select based on viewId for highlighting if needed, 
-      // but simpler to just loop based on text content or index.
-      // For this demo, let's just visually switch sections.
-      
-      // Hide all sections
-      document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-      document.getElementById(`view-${viewId}`).classList.remove('hidden');
-      
-      // Update Header
-      const titles = {
-        'dashboard': ['Dashboard', 'Financial Overview'],
-        'transfers': ['Transfers', 'Send Money Securely'],
-        'billpay': ['Bill Payments', 'Manage Utilities'],
-        'loan': ['Calculator', 'Plan your Loans'],
-        'profile': ['My Profile', 'Settings & Security']
-      };
-      
-      const [h, p] = titles[viewId] || ['Dashboard', ''];
-      document.getElementById('page-heading').innerText = h;
-      document.getElementById('page-subheading').innerText = p;
+function navigate(viewId) {
 
-      // Close sidebar on mobile
-      if(window.innerWidth <= 768) {
-        document.getElementById('sidebar').classList.remove('open');
-      }
-    }
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
 
+  document.querySelectorAll('.view-section').forEach(section => {
+    section.classList.add('hidden');
+  });
+
+  document.getElementById(`view-${viewId}`).classList.remove('hidden');
+
+  const titles = {
+    dashboard: ['Dashboard', 'Financial Overview'],
+    transfers: ['Transfers', 'Send Money Securely'],
+    billpay: ['Bill Payments', 'Manage Utilities'],
+    loan: ['Calculator', 'Plan your Loans'],
+    profile: ['My Profile', 'Settings & Security']
+  };
+
+  const [h, p] = titles[viewId];
+  document.getElementById('page-heading').innerText = h;
+  document.getElementById('page-subheading').innerText = p;
+
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+ 
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('open');
     }
