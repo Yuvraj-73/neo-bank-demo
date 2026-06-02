@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>NeoBank | Advanced Secure Banking</title>
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <style>
@@ -215,6 +215,7 @@
     .virtual-card {
       width: 100%;
       height: 100%;
+      touch-action: none;
       background: linear-gradient(135deg, #4361ee, #f72585);
       border-radius: 20px;
       padding: 1.5rem;
@@ -379,6 +380,25 @@
       .hamburger { display: block; font-size: 1.5rem; cursor: pointer; background: none; border: none; color: var(--text-main); }
     }
     @media (min-width: 769px) { .hamburger { display: none; } }
+
+    /* Mobile usability improvements */
+    @media (max-width: 768px) {
+      /* Improve tap targets and readability */
+      button.btn { padding: 1rem; font-size: 1.05rem; border-radius: 12px; }
+      .nav-btn { padding: 1rem; }
+      .account-item { padding: 1.1rem; }
+
+      /* Make tables wrap on small screens */
+      table { min-width: auto; }
+      th, td { white-space: normal; }
+
+      /* Toasts should fit the viewport */
+      .toast { min-width: auto; left: 12px; right: 12px; }
+    }
+
+    /* Focus styles for keyboard/touch accessibility */
+    .nav-btn:focus { box-shadow: 0 0 0 4px rgba(67,97,238,0.12); outline: none; }
+    .account-item:focus { box-shadow: 0 0 0 4px rgba(67,97,238,0.08); outline: none; }
   </style>
 </head>
 <body>
@@ -739,6 +759,18 @@
 
     // --- UTILITIES ---
     async function hash(str) {
+      if (!window.crypto || !crypto.subtle) {
+        // Fallback for older browsers / embedded webviews on some mobiles.
+        showToast('Secure hashing unavailable — using fallback (demo only)', 'warning');
+        // Simple (non-cryptographic) fallback for demo purposes only
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+          h = ((h << 5) - h) + str.charCodeAt(i);
+          h |= 0;
+        }
+        const hex = (h >>> 0).toString(16).padStart(8, '0');
+        return hex.repeat(8);
+      }
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
       return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
     }
@@ -857,7 +889,15 @@
       session.user.accounts.forEach(acc => {
         const el = document.createElement('div');
         el.className = 'account-item';
-        el.onclick = () => alert(`Account: ${acc.iban}`);
+        // Make account items keyboard accessible on mobile/keyboard devices
+        el.tabIndex = 0;
+        el.addEventListener('click', () => alert(`Account: ${acc.iban}`));
+        el.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            el.click();
+          }
+        });
         el.innerHTML = `
           <div class="acc-info">
             <h4>${acc.name}</h4>
@@ -1054,24 +1094,39 @@ function navigate(viewId) {
       document.getElementById('theme-icon').innerText = isDark ? '☀️' : '🌙';
     }
     
-    // Virtual Card Tilt Effect
+    // Virtual Card Tilt Effect (mouse + touch; guarded for environments without elements)
     const card = document.querySelector('.virtual-card');
     const container = document.querySelector('.virtual-card-container');
-    
-    container.addEventListener('mousemove', (e) => {
-      const rect = container.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const xRot = -((y - rect.height/2) / 10);
-      const yRot = (x - rect.width/2) / 10;
-      
-      card.style.transform = `rotateX(${xRot}deg) rotateY(${yRot}deg)`;
-    });
-    
-    container.addEventListener('mouseleave', () => {
-      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
-    });
+    if (card && container) {
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const xRot = -((y - rect.height/2) / 10);
+        const yRot = (x - rect.width/2) / 10;
+        card.style.transform = `rotateX(${xRot}deg) rotateY(${yRot}deg)`;
+      });
+
+      container.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      });
+
+      // Touch support for mobile devices
+      container.addEventListener('touchmove', (e) => {
+        const t = e.touches && e.touches[0];
+        if (!t) return;
+        const rect = container.getBoundingClientRect();
+        const x = t.clientX - rect.left;
+        const y = t.clientY - rect.top;
+        const xRot = -((y - rect.height/2) / 10);
+        const yRot = (x - rect.width/2) / 10;
+        card.style.transform = `rotateX(${xRot}deg) rotateY(${yRot}deg)`;
+      }, { passive: true });
+
+      container.addEventListener('touchend', () => {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      });
+    }
 
   </script>
 </body>
